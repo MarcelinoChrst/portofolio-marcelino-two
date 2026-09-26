@@ -1,0 +1,685 @@
+/* ==========================================================================
+   PALET WARNA RETRO RPG (CRIMSON, GOLD, OBSIDIAN & NEON)
+   ========================================================================== */
+   :root {
+    --bg-gelap: #0d060a;
+    --bg-kotak: #1a0b12;
+    --bg-kartu: #26101a;
+    --merah-utama: #9e1b27;
+    --merah-terang: #e62234;
+    --merah-gelap: #540911;
+    --emas-utama: #ffcc00;
+    --emas-gelap: #b38f00;
+    --hijau-neon: #00ff66;
+    --biru-mp: #00bfff;
+    --teks-terang: #fff5ea;
+    --teks-pudar: #c7b2a3;
+    --font-pixel: 'Press Start 2P', 'Silkscreen', monospace;
+}
+
+/* Reset Engine & Layout */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: var(--font-pixel);
+    image-rendering: pixelated;
+    -webkit-font-smoothing: none;
+}
+
+html {
+    scroll-behavior: smooth;
+    background-color: var(--bg-gelap);
+}
+
+body {
+    background-color: var(--bg-gelap);
+    color: var(--teks-terang);
+    line-height: 1.8;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* Custom Pixel Scrollbar */
+::-webkit-scrollbar {
+    width: 10px;
+}
+::-webkit-scrollbar-track {
+    background: var(--bg-gelap);
+}
+::-webkit-scrollbar-thumb {
+    background: var(--merah-utama);
+    border: 2px solid var(--emas-utama);
+}
+
+/* ==========================================================================
+   EFEK OVERLAY CRT SCANLINE
+   ========================================================================== */
+.crt-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.4) 50%),
+                linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+    background-size: 100% 4px, 6px 100%;
+    z-index: 99999;
+    pointer-events: none;
+    opacity: 0.9;
+}
+
+.crt-overlay.matikan {
+    display: none;
+}
+
+/* ==========================================================================
+   HUD GAME TOPBAR & NAVIGASI
+   ========================================================================== */
+.hud-topbar {
+    position: sticky;
+    top: 0;
+    background-color: var(--merah-gelap);
+    border-bottom: 4px solid var(--emas-utama);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    z-index: 10000;
+    box-shadow: 0 6px 0 #000;
+}
+
+.hud-profil {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.hud-logo {
+    color: var(--emas-utama);
+    text-decoration: none;
+    font-size: 0.8rem;
+    text-shadow: 2px 2px #000;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.badge-lv {
+    background: var(--merah-terang);
+    color: #fff;
+    font-size: 0.5rem;
+    padding: 2px 6px;
+    border: 1px solid var(--emas-utama);
+}
+
+.hud-bars {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.bar-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.45rem;
+}
+
+.bar-label {
+    width: 20px;
+    color: var(--emas-utama);
+}
+
+.bar-track {
+    width: 100px;
+    height: 8px;
+    background-color: #000;
+    border: 1px solid var(--emas-gelap);
+    padding: 1px;
+}
+
+.bar-fill {
+    height: 100%;
+}
+
+.hp-fill { background: linear-gradient(90deg, #ff3333, #ff6666); }
+.mp-fill { background: linear-gradient(90deg, var(--biru-mp), #80dfff); }
+.exp-fill { background: linear-gradient(90deg, var(--hijau-neon), #80ffb3); }
+
+.bar-val {
+    font-size: 0.4rem;
+    color: var(--teks-pudar);
+}
+
+.grup-toggle-header {
+    display: flex;
+    gap: 8px;
+}
+
+.nav-menu {
+    display: flex;
+    gap: 12px;
+}
+
+.nav-menu a {
+    color: var(--teks-terang);
+    text-decoration: none;
+    font-size: 0.55rem;
+    padding: 6px 8px;
+    border: 2px solid transparent;
+    transition: 0.1s;
+}
+
+.nav-menu a:hover {
+    color: var(--emas-utama);
+    border-color: var(--emas-utama);
+    background-color: var(--merah-utama);
+}
+
+.tombol-toggle-menu {
+    display: none;
+    background: var(--merah-utama);
+    color: var(--emas-utama);
+    border: 2px solid var(--emas-utama);
+    padding: 6px 10px;
+    font-size: 0.6rem;
+    cursor: pointer;
+}
+
+/* ==========================================================================
+   ELEMEN UTAMA PIXEL UI
+   ========================================================================== */
+.wadah-utama {
+    max-width: 980px;
+    margin: 30px auto;
+    padding: 0 16px;
+}
+
+.kotak-pixel {
+    background-color: var(--bg-kotak);
+    border: 4px solid var(--emas-utama);
+    box-shadow: 6px 6px 0 #000, inset 0 0 0 2px var(--merah-gelap);
+    padding: 24px;
+    margin-bottom: 32px;
+    position: relative;
+}
+
+.judul-bagian {
+    color: var(--emas-utama);
+    font-size: 0.85rem;
+    margin-bottom: 20px;
+    border-bottom: 3px dashed var(--emas-gelap);
+    padding-bottom: 10px;
+    text-shadow: 2px 2px #000;
+}
+
+.subjudul-pixel {
+    font-size: 0.65rem;
+    color: var(--emas-utama);
+    margin-bottom: 14px;
+}
+
+.tombol-pixel {
+    background-color: var(--merah-utama);
+    color: var(--teks-terang);
+    border: 3px solid var(--emas-utama);
+    padding: 8px 14px;
+    font-size: 0.55rem;
+    cursor: pointer;
+    text-shadow: 1px 1px #000;
+    box-shadow: inset -2px -2px 0 #000, inset 2px 2px 0 #ff6666, 3px 3px 0 #000;
+    transition: transform 0.05s, background-color 0.1s;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+}
+
+.tombol-pixel:hover {
+    background-color: var(--merah-terang);
+    color: var(--emas-utama);
+}
+
+.tombol-pixel:active {
+    transform: translate(2px, 2px);
+    box-shadow: inset 2px 2px 0 #000;
+}
+
+.tombol-full {
+    width: 100%;
+}
+
+.tombol-sekunder {
+    background-color: var(--merah-gelap);
+}
+
+/* ==========================================================================
+   SECTION 0: NPC DIALOGUE HERO BOX
+   ========================================================================== */
+.dialog-box {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 20px;
+    align-items: center;
+    background: linear-gradient(180deg, #1f0b14, #0d0408);
+}
+
+.avatar-npc {
+    text-align: center;
+}
+
+.avatar-npc img {
+    width: 120px;
+    height: 120px;
+    border: 3px solid var(--emas-utama);
+    background: #000;
+    object-fit: cover;
+    box-shadow: 4px 4px 0 #000;
+}
+
+.label-npc {
+    display: block;
+    margin-top: 6px;
+    font-size: 0.45rem;
+    color: var(--hijau-neon);
+}
+
+.nama-npc {
+    font-size: 0.9rem;
+    color: var(--emas-utama);
+    margin-bottom: 10px;
+    text-shadow: 2px 2px #000;
+}
+
+.teks-ketik {
+    font-size: 0.6rem;
+    color: var(--teks-pudar);
+    line-height: 1.9;
+    min-height: 60px;
+    margin-bottom: 16px;
+}
+
+.aksi-dialog {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+/* ==========================================================================
+   SECTION 1: STATS & SKILL TREE
+   ========================================================================== */
+.grid-status {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 24px;
+}
+
+.kartu-stats-pemain {
+    background: var(--bg-kartu);
+    border: 2px solid var(--emas-gelap);
+    padding: 16px;
+    box-shadow: 4px 4px 0 #000;
+}
+
+.bingkai-foto {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border: 3px solid var(--emas-utama);
+    margin-bottom: 12px;
+}
+
+.bingkai-foto img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.atrib-pemain p {
+    font-size: 0.5rem;
+    margin-bottom: 6px;
+    color: var(--teks-pudar);
+}
+
+.atrib-pemain strong {
+    color: var(--emas-utama);
+}
+
+.exp-row {
+    margin-top: 10px;
+    font-size: 0.45rem;
+    color: var(--hijau-neon);
+}
+
+.exp-track {
+    width: 100%;
+    margin-top: 4px;
+}
+
+.wadah-keahlian {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.kotak-bio-singkat {
+    margin-bottom: 20px;
+    padding-bottom: 14px;
+    border-bottom: 2px dashed var(--emas-gelap);
+}
+
+.label-keahlian {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.5rem;
+    color: var(--teks-terang);
+    margin-bottom: 4px;
+}
+
+.bingkai-bilah {
+    background: #000;
+    border: 2px solid var(--emas-gelap);
+    height: 16px;
+    padding: 2px;
+}
+
+.isi-bilah {
+    height: 100%;
+    background: linear-gradient(90deg, var(--merah-utama), var(--emas-utama));
+}
+
+/* ==========================================================================
+   SECTION 2: QUEST LOG (PROYEK) & FILTER
+   ========================================================================== */
+.filter-quest {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+
+.tombol-filter {
+    background: #000;
+    color: var(--teks-pudar);
+    border: 2px solid var(--emas-gelap);
+    padding: 6px 10px;
+    font-size: 0.5rem;
+    cursor: pointer;
+}
+
+.tombol-filter.aktif, .tombol-filter:hover {
+    background: var(--merah-utama);
+    color: var(--emas-utama);
+    border-color: var(--emas-utama);
+}
+
+.grid-proyek {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+}
+
+.kartu-proyek {
+    background-color: var(--bg-kartu);
+    border: 3px solid var(--merah-utama);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 4px 4px 0 #000;
+    transition: transform 0.1s, border-color 0.2s;
+}
+
+.kartu-proyek:hover {
+    border-color: var(--emas-utama);
+    transform: translateY(-2px);
+}
+
+.head-quest {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.badge-status-quest {
+    font-size: 0.45rem;
+    padding: 2px 6px;
+    border: 1px solid var(--hijau-neon);
+    color: var(--hijau-neon);
+    background: #000;
+}
+
+.reward-quest {
+    font-size: 0.45rem;
+    color: var(--emas-utama);
+}
+
+.ikon-proyek {
+    font-size: 2rem;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.judul-proyek {
+    font-size: 0.65rem;
+    color: var(--emas-utama);
+    margin-bottom: 8px;
+    line-height: 1.4;
+}
+
+.deskripsi-proyek {
+    font-size: 0.55rem;
+    color: var(--teks-pudar);
+    margin-bottom: 12px;
+    line-height: 1.8;
+}
+
+.tag-teknologi {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 14px;
+}
+
+.label-teknologi {
+    background: #000;
+    border: 1px solid var(--emas-gelap);
+    color: var(--emas-utama);
+    font-size: 0.45rem;
+    padding: 3px 6px;
+}
+
+/* ==========================================================================
+   SECTION 3: FORMULIR KONTAK
+   ========================================================================== */
+.formulir-kontak {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.grup-input {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.grup-input label {
+    font-size: 0.55rem;
+    color: var(--emas-utama);
+}
+
+.input-pixel {
+    background-color: #000;
+    border: 2px solid var(--emas-gelap);
+    color: var(--teks-terang);
+    padding: 10px;
+    font-size: 0.55rem;
+    outline: none;
+}
+
+.input-pixel:focus {
+    border-color: var(--emas-utama);
+    box-shadow: 0 0 8px var(--emas-gelap);
+}
+
+.tombol-kirim {
+    padding: 12px;
+}
+
+/* ==========================================================================
+   FOOTER & INVENTORY SLOTS
+   ========================================================================== */
+footer {
+    border-top: 3px dashed var(--merah-utama);
+    padding-top: 24px;
+    text-align: center;
+}
+
+.judul-inventory {
+    font-size: 0.6rem;
+    color: var(--emas-utama);
+    margin-bottom: 14px;
+}
+
+.grid-inventory {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+}
+
+.slot-inv {
+    background: #000;
+    border: 2px solid var(--emas-gelap);
+    padding: 10px 14px;
+    text-decoration: none;
+    color: var(--teks-terang);
+    font-size: 0.55rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 3px 3px 0 #000;
+    transition: 0.1s;
+}
+
+.slot-inv:hover {
+    border-color: var(--emas-utama);
+    background: var(--merah-utama);
+    color: var(--emas-utama);
+}
+
+.footer-bottom {
+    font-size: 0.45rem;
+    color: var(--teks-pudar);
+    line-height: 1.8;
+}
+
+.sub-footer {
+    color: var(--emas-gelap);
+    margin-top: 4px;
+}
+
+/* ==========================================================================
+   MODAL RPG DIALOG POPUP
+   ========================================================================== */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.85);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 999999;
+    padding: 16px;
+}
+
+.modal-overlay.aktif {
+    display: flex;
+}
+
+.modal-konten {
+    max-width: 520px;
+    width: 100%;
+    background: var(--bg-kotak);
+    border-color: var(--emas-utama);
+}
+
+.header-modal {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.tombol-tutup-modal {
+    background: transparent;
+    border: none;
+    color: var(--merah-terang);
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+.judul-modal {
+    font-size: 0.8rem;
+    color: var(--emas-utama);
+    margin-bottom: 12px;
+}
+
+.deskripsi-modal {
+    font-size: 0.55rem;
+    color: var(--teks-pudar);
+    line-height: 1.8;
+    margin-bottom: 16px;
+}
+
+.tombol-scroll-atas {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    display: none;
+    z-index: 10000;
+}
+
+/* ==========================================================================
+   RESPONSIF MOBILE
+   ========================================================================== */
+@media (max-width: 768px) {
+    .hud-topbar {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .hud-bars {
+        display: none;
+    }
+
+    .tombol-toggle-menu {
+        display: block;
+    }
+
+    .nav-menu {
+        display: none;
+        width: 100%;
+        flex-direction: column;
+        gap: 8px;
+        margin-top: 8px;
+        padding-top: 8px;
+        border-top: 2px dashed var(--emas-gelap);
+    }
+
+    .nav-menu.aktif {
+        display: flex;
+    }
+
+    .dialog-box, .grid-status {
+        grid-template-columns: 1fr;
+    }
+
+    .avatar-npc img {
+        margin: 0 auto;
+    }
+}
